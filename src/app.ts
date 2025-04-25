@@ -1,7 +1,7 @@
 import express from 'express';
-import abiturientRouter from './resources/abiturient/abiturient.router.js';
-import examRouter from './resources/exam/exam.router.js';
-import teacherRouter from './resources/teacher/teacher.router.js';
+import abiturientRouter from './resources/abiturient/abiturient.router';
+import examRouter from './resources/exam/exam.router';
+import teacherRouter from './resources/teacher/teacher.router';
 
 const app = express();
 
