@@ -9,8 +9,11 @@ interface TeacherProps {
 
 class Teacher {
   readonly id: string;
+
   readonly lastName: string;
+
   readonly firstName: string;
+
   readonly degree: string;
 
   constructor({

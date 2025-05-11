@@ -9,8 +9,11 @@ interface AbiturientProps {
 
 class Abiturient {
   readonly id: string;
+
   readonly lastName: string;
+
   readonly firstName: string;
+
   readonly numCertificate: number;
 
   constructor({

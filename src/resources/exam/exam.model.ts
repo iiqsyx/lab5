@@ -11,10 +11,15 @@ interface ExamProps {
 
 class Exam {
   readonly id: string;
+
   readonly abiturientId: string | null;
+
   readonly teacherId: string | null;
+
   readonly subject: string;
+
   readonly date: string;
+
   readonly score: number;
 
   constructor({
