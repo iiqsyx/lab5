@@ -9,7 +9,7 @@
   "description": "nodejs-mitso",
   "main": "build/server.ts",
   "scripts": {
-    "start": "node src/server.ts",
+    "start": "nodemon src/server.ts",
     "build": "tsc",
     "postbuild": "node fix-imports.mjs",
     "dev": "nodemon --watch src/**/*.ts --exec ts-node src/server.ts",

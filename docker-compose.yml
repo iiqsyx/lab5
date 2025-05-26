@@ -1,4 +1,12 @@
-version: '3.8'
+version: '3'
+
+networks:
+  app-bridge:
+    driver: bridge
+
+volumes:
+  pgdata:
+  pgadmin:
 
 services:
   app:
@@ -11,4 +19,34 @@ services:
       NODE_ENV: development
       PORT: 4000
       JWT_SECRET_KEY: secret-key
-    restart: unless-stopped
+    restart: on-failure
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.postgres
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    networks:
+      - app-bridge
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - ${PGADMIN_PORT}:80
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - app-bridge
+

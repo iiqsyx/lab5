@@ -1,12 +1,11 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
-WORKDIR /app
+WORKDIR /home/node/app
+COPY ./package*.json ./
 
-# Копируем зависимости и устанавливаем их
-COPY package*.json ./
 RUN npm install
 
-# Копируем остальные файлы
 COPY . .
 
-CMD ["npm", "run", "dev"]
+EXPOSE ${PORT}
+CMD ["npm", "start"]

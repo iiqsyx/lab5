@@ -58,3 +58,4 @@
 {"level":"info","message":"::ffff:127.0.0.1 - - [21/May/2025:16:13:43 +0000] \"POST /exams HTTP/1.1\" 201 151 \"-\" \"-\"","service":"user-service","timestamp":"2025-05-21 19:13:43"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [21/May/2025:16:13:43 +0000] \"POST /abiturients HTTP/1.1\" 201 112 \"-\" \"-\"","service":"user-service","timestamp":"2025-05-21 19:13:43"}
 {"level":"info","message":"127.0.0.1 - - [21/May/2025:16:14:06 +0000] \"GET /abiturients HTTP/1.1\" 200 2 \"-\" \"PostmanRuntime/7.43.4\"","service":"user-service","timestamp":"2025-05-21 19:14:06"}
+{"level":"info","message":"::1 - - [21/May/2025:16:38:43 +0000] \"POST /abiturients HTTP/1.1\" 201 117 \"-\" \"PostmanRuntime/7.43.4\"","service":"user-service","timestamp":"2025-05-21 19:38:43"}
