@@ -65,9 +65,11 @@
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
+    "bcrypt": "^6.0.0",
     "cross-env": "^7.0.3",
     "dotenv": "^9.0.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "supertest": "^7.0.0",
     "uuid": "^8.3.2",
@@ -75,8 +77,10 @@
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^22.0.1",
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.12.11",
     "@types/supertest": "^6.0.2",

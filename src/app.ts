@@ -4,6 +4,8 @@ import errorHandler from './middleware/errorHandler';
 import abiturientRouter from './resources/abiturient/abiturient.router';
 import examRouter from './resources/exam/exam.router';
 import teacherRouter from './resources/teacher/teacher.router';
+import adminRouter from './resources/admin/admin.router';
+import { authMiddleware } from './middleware/authenticate';
 
 const app = express();
 
@@ -18,9 +20,13 @@ app.use('/', (req, res, next) => {
   next();
 });
 
+app.use('/users/login', adminRouter); // /login доступен без аутентификации
+app.use(authMiddleware);
+
 app.use('/abiturients', abiturientRouter);
 app.use('/exams', examRouter);
 app.use('/teachers', teacherRouter);
+app.use('/users', adminRouter);
 
 app.use(errorHandler);
 
