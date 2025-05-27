@@ -1,38 +1,37 @@
-import * as abiturientRepository from '../repositories/memory.repository';
-import Abiturient from './abiturient.model';
-import Exam from '../exam/exam.model';
+import prisma from '../../common/prisma';
+import type { Prisma } from '.prisma/client';
 
-export const getAllAbiturients = (): Abiturient[] => abiturientRepository.getAbiturients();
-
-export const getAbiturientById = (id: string): Abiturient | undefined =>
-  abiturientRepository.findAbiturientById(id);
-
-export const getAbiturientExams = (abiturientId: string): Exam[] =>
-  abiturientRepository.findExamsByAbiturientId(abiturientId);
-
-export const createAbiturient = (abiturientData: Omit<Abiturient, 'id'>): Abiturient => {
-  const newAbiturient = new Abiturient(abiturientData);
-  return abiturientRepository.addAbiturient(newAbiturient);
+export const getAllAbiturients = async () => {
+  return prisma.abiturient.findMany();
 };
 
-export const updateAbiturient = (id: string, updateData: Partial<Omit<Abiturient, 'id'>>): Abiturient | null => {
-  const abiturient = abiturientRepository.findAbiturientById(id);
-  if (!abiturient) return null;
-
-  Object.assign(abiturient, updateData);
-  return abiturient;
-};
-
-export const deleteAbiturientWithExams = (id: string): void => {
-  const exams = abiturientRepository.findExamsByAbiturientId(id);
-
-  exams.forEach(exam => {
-    if (exam.teacherId === null) {
-      abiturientRepository.deleteExam(exam.id);
-    } else {
-      abiturientRepository.updateExam(exam.id, { abiturientId: null });
-    }
+export const getAbiturientById = async (id: string) => {
+  return prisma.abiturient.findUnique({
+    where: { id },
+    include: { exams: true }
   });
+};
 
-  abiturientRepository.deleteAbiturient(id);
+export const getAbiturientExams = async (abiturientId: string) => {
+  return prisma.exam.findMany({
+    where: { abiturientId }
+  });
+};
+
+export const createAbiturient = async (data: Prisma.AbiturientCreateInput) => {
+  return prisma.abiturient.create({ data });
+};
+
+export const updateAbiturient = async (id: string, data: Prisma.AbiturientUpdateInput) => {
+  return prisma.abiturient.update({
+    where: { id },
+    data
+  });
+};
+
+export const deleteAbiturientWithExams = async (id: string) => {
+  return prisma.$transaction([
+    prisma.exam.deleteMany({ where: { abiturientId: id } }),
+    prisma.abiturient.delete({ where: { id } })
+  ]);
 };

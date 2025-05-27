@@ -1,39 +1,82 @@
-import {
-  getTeachers,
-  findTeacherById,
-  addTeacher,
-  updateTeacher as updateTeacherRepo,
-  deleteTeacher,
-  findExamsByTeacherId,
-  updateExam,
-  deleteExam
-} from '../repositories/memory.repository';
-import type Teacher from './teacher.model';
-import type Exam  from '../exam/exam.model';
+import prisma from '../../common/prisma';
+import { Prisma } from '.prisma/client';
 
-export const getAllTeachers = (): Teacher[] => getTeachers();
-
-export const getTeacherById = (id: string): Teacher | undefined =>
-  findTeacherById(id);
-
-export const getTeacherExams = (teacherId: string): Exam[] =>
-  findExamsByTeacherId(teacherId);
-
-export const createTeacher = (data: Omit<Teacher, 'id'>): Teacher =>
-  addTeacher(data);
-
-export const updateTeacher = (id: string, data: Partial<Omit<Teacher, 'id'>>): Teacher | undefined =>
-  updateTeacherRepo(id, data);
-
-export const deleteTeacherWithExams = (id: string): void => {
-  const teacherExams = findExamsByTeacherId(id);
-  teacherExams.forEach(exam => {
-    if (exam.abiturientId === null) {
-      deleteExam(exam.id);
-    } else {
-      updateExam(exam.id, { teacherId: null });
+export const getAllTeachers = async () => {
+  return prisma.teacher.findMany({
+    include: {
+      exams: {
+        include: {
+          abiturient: true
+        }
+      }
     }
   });
+};
 
-  deleteTeacher(id);
+export const getTeacherById = async (id: string) => {
+  return prisma.teacher.findUnique({
+    where: { id },
+    include: {
+      exams: {
+        include: {
+          abiturient: true
+        }
+      }
+    }
+  });
+};
+
+export const getTeacherExams = async (teacherId: string) => {
+  return prisma.exam.findMany({
+    where: { teacherId },
+    include: {
+      abiturient: true
+    }
+  });
+};
+
+export const createTeacher = async (data: Prisma.TeacherCreateInput) => {
+  return prisma.teacher.create({
+    data,
+    include: {
+      exams: true
+    }
+  });
+};
+
+export const updateTeacher = async (
+  id: string,
+  data: Prisma.TeacherUpdateInput
+) => {
+  return prisma.teacher.update({
+    where: { id },
+    data,
+    include: {
+      exams: true
+    }
+  });
+};
+
+export const deleteTeacherWithExams = async (id: string) => {
+  return prisma.$transaction([
+    // Удаляем экзамены без абитуриентов
+    prisma.exam.deleteMany({
+      where: {
+        teacherId: id,
+        abiturientId: null
+      }
+    }),
+    // Обнуляем teacherId у остальных экзаменов
+    prisma.exam.updateMany({
+      where: {
+        teacherId: id,
+        abiturientId: { not: null }
+      },
+      data: { teacherId: null }
+    }),
+    // Удаляем преподавателя
+    prisma.teacher.delete({
+      where: { id }
+    })
+  ]);
 };

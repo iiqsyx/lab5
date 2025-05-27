@@ -14,19 +14,23 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "4000:4000"
+      - ${PORT}:${PORT}
     environment:
       NODE_ENV: development
-      PORT: 4000
+      PORT: ${PORT}
       JWT_SECRET_KEY: secret-key
+      DATABASE_URL: ${DATABASE_URL}
     restart: on-failure
+    networks:
+      - app-bridge
 
   postgres:
+    container_name: postgres
     build:
       context: .
       dockerfile: ./Dockerfile.postgres
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - '5434:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
